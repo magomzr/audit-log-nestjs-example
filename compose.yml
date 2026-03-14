@@ -14,6 +14,25 @@ services:
       interval: 5s
       retries: 5
 
+  loki:
+    image: grafana/loki:3.4.2
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - lokidata:/loki
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafanadata:/var/lib/grafana
+    depends_on:
+      - loki
+
   api:
     build:
       context: .
@@ -28,3 +47,5 @@ services:
 
 volumes:
   pgdata:
+  lokidata:
+  grafanadata:
