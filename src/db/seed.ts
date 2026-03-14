@@ -5,7 +5,13 @@ import { randomUUID } from 'node:crypto';
 import * as schema from './schema';
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
-  admin: ['insert:element', 'update:element', 'delete:element', 'read:element'],
+  admin: [
+    'insert:element',
+    'update:element',
+    'delete:element',
+    'read:element',
+    'read:audit',
+  ],
   editor: ['insert:element', 'update:element', 'read:element'],
   viewer: ['read:element'],
 };

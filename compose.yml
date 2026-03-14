@@ -6,26 +6,27 @@ services:
       POSTGRES_USER: audit
       POSTGRES_PASSWORD: audit
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U audit"]
+      test: ['CMD-SHELL', 'pg_isready -U audit']
       interval: 5s
       retries: 5
 
   loki:
     image: grafana/loki:3.4.2
     ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
+      - '3100:3100'
+    command: -config.file=/etc/loki/local-config.yml
     volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yml
       - lokidata:/loki
 
   grafana:
     image: grafana/grafana:11.6.0
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
@@ -38,12 +39,14 @@ services:
       context: .
       dockerfile: Containerfile
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env.container
     depends_on:
       db:
         condition: service_healthy
+      loki:
+        condition: service_started
 
 volumes:
   pgdata:
